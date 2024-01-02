@@ -16,10 +16,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Install Pre-Requisities
+    - name: Install NuGet
       uses: NuGet/setup-nuget@v1.2.0
-            microsoft/setup-msbuild@v1.1
     - name: Restore
       run: nuget restore Snaffler.sln
+    - name: Install MSBuild
+      uses: microsoft/setup-msbuild@v1.1
     - name: Build
       run: msbuild Snaffler.sln -t:rebuild -property:Configuration=Release
