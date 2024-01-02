@@ -12,6 +12,8 @@ on:
 jobs:
   build_and_release:
     runs-on: windows-2019
+    env:
+      GHW_BINARY_PATH: '${{ github.workspace }}\Snaffler\bin\Release'
     steps:
     - uses: actions/checkout@v3
     
@@ -30,13 +32,13 @@ jobs:
     - name: Get Version
       id: get_version
       run: |
-        $assembly = [System.Reflection.Assembly]::LoadFile("${{ github.workspace }}\Snaffler\bin\Release\Snaffler.exe")
+        $assembly = [System.Reflection.Assembly]::LoadFile("$GHW_BINARY_PATH\Snaffler.exe")
         $version = $assembly.GetName().Version.ToString() + '-' + '${{ github.run_number }}'
         echo "::set-output name=assemblyVersion::$version"
       shell: powershell
 
     - name: Create Zip
-      run: Compress-Archive -Path ${{ github.workspace }}\Snaffler\bin\Release\* -DestinationPath .\Snaffler.zip
+      run: Compress-Archive -Path $GHW_BINARY_PATH\* -DestinationPath .\Snaffler.zip
       shell: powershell
 
     - name: Create Release
