@@ -25,10 +25,11 @@ jobs:
       
   publish:
     runs-on: ubuntu-latest
+    needs: build
     steps:
     - name: PWD
       run: pwd
     - name: List
       run: ls -la
     - name: List
-      run: ls $HOME -la
+      run: ls $GITHUB_WORKSPACE -la
