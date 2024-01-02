@@ -20,4 +20,4 @@ jobs:
     - name: Restore
       run: nuget restore Snaffler.sln
     - name: Build
-      run: dotnet build Snaffler.sln
+      run: dotnet msbuild Snaffler.sln
