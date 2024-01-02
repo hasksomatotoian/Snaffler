@@ -13,7 +13,9 @@ jobs:
   build_and_release:
     runs-on: windows-2019
     env:
+      GHW_SOLUTION_FILE: 'Snaffler.sln'
       GHW_BINARY_PATH: '${{ github.workspace }}\Snaffler\bin\Release'
+      GHW_BINARY_FILE: '$GHW_BINARY_PATH\Snaffler.exe'
     steps:
     - uses: actions/checkout@v3
     
@@ -21,7 +23,7 @@ jobs:
       uses: NuGet/setup-nuget@v1.2.0
       
     - name: Restore
-      run: nuget restore Snaffler.sln
+      run: nuget restore $GHW_SOLUTION_FILE
       
     - name: Install MSBuild
       uses: microsoft/setup-msbuild@v1.1
@@ -32,13 +34,13 @@ jobs:
     - name: Get Version
       id: get_version
       run: |
-        $assembly = [System.Reflection.Assembly]::LoadFile("$GHW_BINARY_PATH\Snaffler.exe")
+        $assembly = [System.Reflection.Assembly]::LoadFile("$env:GHW_BINARY_FILE")
         $version = $assembly.GetName().Version.ToString() + '-' + '${{ github.run_number }}'
         echo "::set-output name=assemblyVersion::$version"
       shell: powershell
 
     - name: Create Zip
-      run: Compress-Archive -Path $GHW_BINARY_PATH\* -DestinationPath .\Snaffler.zip
+      run: Compress-Archive -Path "$env:GHW_BINARY_PATH\*" -DestinationPath .\Snaffler.zip
       shell: powershell
 
     - name: Create Release
