@@ -22,6 +22,12 @@ jobs:
       uses: microsoft/setup-msbuild@v1.1
     - name: Build
       run: msbuild Snaffler.sln -t:rebuild -property:Configuration=Release
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: binaries
+        path: |
+          ${{ github.workspace }}/bin/Release/**
     - name: Dir
       run: dir $GITHUB_WORKSPACE\bin\Release
         
