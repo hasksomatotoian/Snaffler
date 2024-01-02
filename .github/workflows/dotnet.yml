@@ -15,6 +15,6 @@ jobs:
     runs-on: windows-2019
 
     steps:
-    - name: Build
-      run: dir C:\Windows\Microsoft.NET\Framework64\v4.0.30319\M*.*
     - uses: actions/checkout@v3
+    - name: Build
+      run: C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe -t:build -restore Snaffler.sln
