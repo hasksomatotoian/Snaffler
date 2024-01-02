@@ -15,7 +15,7 @@ jobs:
     env:
       GHW_SOLUTION_FILE: 'Snaffler.sln'
       GHW_BINARY_PATH: '${{ github.workspace }}\Snaffler\bin\Release'
-      GHW_BINARY_FILE: '$GHW_BINARY_PATH\Snaffler.exe'
+      GHW_BINARY_FILE: '$env:GHW_BINARY_PATH\Snaffler.exe'
     steps:
     - uses: actions/checkout@v3
     
