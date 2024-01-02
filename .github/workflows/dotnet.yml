@@ -32,7 +32,7 @@ jobs:
       run: |
         $assembly = [System.Reflection.Assembly]::LoadFile("${{ github.workspace }}\Snaffler\bin\Release\Snaffler.exe")
         $version = $assembly.GetName().Version.ToString() + '-' + '${{ github.run_number }}'
-        echo "::set-output name=assemblyVersion::$version"
+        echo "assemblyVersion=$version" >> $GITHUB_OUTPUT
       shell: powershell
 
 
