@@ -27,8 +27,17 @@ jobs:
     - name: Build
       run: msbuild Snaffler.sln -t:rebuild -property:Configuration=Release
 
+    - name: Get Version
+      id: get_version
+      run: |
+        $assembly = [System.Reflection.Assembly]::LoadFile("${{ github.workspace }}\Snaffler\bin\Release\Snaffler.exe")
+        $version = $assembly.GetName().Version + '-' + '${{ github.run_number }}'
+        echo "::set-output name=assemblyVersion::$version"
+      shell: powershell
+
+
     - name: Zip the artifacts
-      run: Compress-Archive -Path ${{ github.workspace }}\Snaffler\bin\Release\* -DestinationPath .\Snaffler-${{ github.run_number }}.zip
+      run: Compress-Archive -Path ${{ github.workspace }}\Snaffler\bin\Release\* -DestinationPath .\Snaffler.zip
       shell: powershell
 
     - name: Create Release
@@ -37,8 +46,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ github.run_number }}
-        release_name: Snaffler build ${{ github.run_number }}
+        tag_name: v${{ steps.get_version.outputs.assemblyVersion }}
+        release_name: Snaffler v${{ steps.get_version.outputs.assemblyVersion }}
         draft: false
         prerelease: false
 
@@ -48,6 +57,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: .\Snaffler-${{ github.run_number }}.zip
-        asset_name: Snaffler-${{ github.run_number }}.zip
+        asset_path: .\Snaffler.zip
+        asset_name: Snaffler-v${{ steps.get_version.outputs.assemblyVersion }}.zip
         asset_content_type: application/zip
