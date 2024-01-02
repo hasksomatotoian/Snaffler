@@ -14,20 +14,18 @@ jobs:
     runs-on: windows-2019
     steps:
     - uses: actions/checkout@v3
+    
     - name: Install NuGet
       uses: NuGet/setup-nuget@v1.2.0
+      
     - name: Restore
       run: nuget restore Snaffler.sln
+      
     - name: Install MSBuild
       uses: microsoft/setup-msbuild@v1.1
+      
     - name: Build
       run: msbuild Snaffler.sln -t:rebuild -property:Configuration=Release
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: Snaffler-${{ github.run_number }}
-        path: |
-          ${{ github.workspace }}\Snaffler\bin\Release\**
 
     - name: Zip the artifacts
       run: Compress-Archive -Path ${{ github.workspace }}\Snaffler\bin\Release\* -DestinationPath .\Snaffler-${{ github.run_number }}.zip
@@ -39,8 +37,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ github.run_id }}
-        release_name: Release ${{ github.run_id }}
+        tag_name: ${{ github.run_number }}
+        release_name: Snaffler #${{ github.run_number }}
         draft: false
         prerelease: false
 
