@@ -27,7 +27,7 @@ jobs:
       with:
         name: binaries
         path: |
-          ${{ github.workspace }}/bin/Release/**
+          ${{ github.workspace }}\Snaffler\bin\Release\**
     - name: Dir
       run: dir $GITHUB_WORKSPACE\bin\Release
         
