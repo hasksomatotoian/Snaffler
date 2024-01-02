@@ -23,13 +23,13 @@ jobs:
       uses: NuGet/setup-nuget@v1.2.0
       
     - name: Restore
-      run: nuget restore $GHW_SOLUTION_FILE
+      run: nuget restore $env:GHW_SOLUTION_FILE
       
     - name: Install MSBuild
       uses: microsoft/setup-msbuild@v1.1
       
     - name: Build
-      run: msbuild Snaffler.sln -t:rebuild -property:Configuration=Release
+      run: msbuild $env:GHW_SOLUTION_FILE -t:rebuild -property:Configuration=Release
 
     - name: Get Version
       id: get_version
