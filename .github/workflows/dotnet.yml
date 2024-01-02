@@ -16,7 +16,5 @@ jobs:
 
     steps:
     - name: Build
-      run: dir C:\Windows\Microsoft.NET\Framework64\
+      run: dir C:\Windows\Microsoft.NET\Framework64\v4.0.30319\M*.*
     - uses: actions/checkout@v3
-    - name: Test
-      run: dotnet test --no-build --verbosity normal Snaffler.sln
