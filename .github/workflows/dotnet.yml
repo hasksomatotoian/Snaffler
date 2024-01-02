@@ -25,19 +25,6 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: binaries
+        name: Snaffler-${{ github.run_number }}
         path: |
           ${{ github.workspace }}\Snaffler\bin\Release\**
-    - name: Dir
-      run: dir $GITHUB_WORKSPACE\bin\Release
-        
-  publish:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-    - name: PWD
-      run: pwd
-    - name: List
-      run: ls -la
-    - name: List
-      run: ls $GITHUB_WORKSPACE -la
