@@ -10,7 +10,7 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build:
+  build_and_release:
     runs-on: windows-2019
     steps:
     - uses: actions/checkout@v3
@@ -28,3 +28,28 @@ jobs:
         name: Snaffler-${{ github.run_number }}
         path: |
           ${{ github.workspace }}\Snaffler\bin\Release\**
+
+    - name: Zip the artifacts
+      run: Compress-Archive -Path ${{ github.workspace }}\Snaffler\bin\Release\* -DestinationPath .\Snaffler-${{ github.run_number }}.zip
+      shell: powershell
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.run_id }}
+        release_name: Release ${{ github.run_id }}
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: .\Snaffler-${{ github.run_number }}.zip
+        asset_name: Snaffler-${{ github.run_number }}
+        asset_content_type: application/zip
