@@ -19,9 +19,10 @@ jobs:
       TIMT_PROJECT_NAME: 'Snaffler'
       TIMT_SOLUTION_FILE: 'Snaffler.sln'
       TIMT_BINARY_PATH: '${{ github.workspace }}\Snaffler\bin\Release'
-      TIMT_BINARY_FILE: '${{ env.TIMT_BINARY_PATH }}\Snaffler.exe'
+      TIMT_BINARY_FILE: '${{ github.workspace }}\Snaffler\bin\Release\Snaffler.exe'
 
     steps:
+	
     - uses: actions/checkout@v3
     
     - name: Install NuGet
@@ -36,6 +37,7 @@ jobs:
     - name: Build
       run: msbuild $env:TIMT_SOLUTION_FILE -t:rebuild -property:Configuration=Release
 
+    # Get release version as a combination of the project assembly version and the GitHub build number
     - name: Get Release Version
       id: get_release_version
       run: |
@@ -44,6 +46,7 @@ jobs:
         echo "::set-output name=version::$version"
       shell: powershell
 
+    # Create ZIP file containing project binaries
     - name: Create Zip
       id: create_zip
       run: |
@@ -51,6 +54,7 @@ jobs:
         echo "::set-output name=assetFilename::$env:TIMT_PROJECT_NAME.zip"
       shell: powershell
 
+    # Create new project release
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -62,6 +66,7 @@ jobs:
         draft: false
         prerelease: false
 
+    # Attach ZIP file containing project binaries to the release
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
       env:
