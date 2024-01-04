@@ -22,7 +22,7 @@ jobs:
       TIMT_BINARY_FILE: '${{ github.workspace }}\Snaffler\bin\Release\Snaffler.exe'
 
     steps:
-	
+
     - uses: actions/checkout@v3
     
     - name: Install NuGet
