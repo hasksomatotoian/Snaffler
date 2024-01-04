@@ -38,6 +38,9 @@ jobs:
 
     - name: Checkout Source Code
       uses: actions/checkout@v3
+      
+    - name: Obfuscate
+      run: Snaffler\Snaffler\SharpPack\SharpPack\bin\Release\net7.0\SharpPack.exe $env:TIMT_SOLUTION_FILE -Rename -Anonymize
     
     - name: Install NuGet
       uses: NuGet/setup-nuget@v1.2.0
@@ -47,9 +50,6 @@ jobs:
       
     - name: Install MSBuild
       uses: microsoft/setup-msbuild@v1.1
-      
-    - name: Obfuscate
-      run: SharpPack\SharpPack\bin\Release\SharpPack.exe $env:TIMT_SOLUTION_FILE -Rename -Anonymize
       
     - name: Build
       run: msbuild $env:TIMT_SOLUTION_FILE -t:rebuild -property:Configuration=Release
