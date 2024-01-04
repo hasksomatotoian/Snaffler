@@ -17,9 +17,9 @@ jobs:
     # Use TIMT (The-Infinite-Monkey-Theorem) prefix for variable names
     env:
       TIMT_PROJECT_NAME: 'Snaffler'
-      TIMT_SOLUTION_FILE: 'Snaffler.sln'
-      TIMT_BINARY_PATH: '${{ github.workspace }}\Snaffler\bin\Release'
-      TIMT_BINARY_FILE: '${{ github.workspace }}\Snaffler\bin\Release\Snaffler.exe'
+      TIMT_SOLUTION_FILE: 'Snaffler\Snaffler.sln'
+      TIMT_BINARY_PATH: '${{ github.workspace }}\Snaffler\Snaffler\bin\Release'
+      TIMT_BINARY_FILE: '${{ github.workspace }}\Snaffler\Snaffler\bin\Release\Snaffler.exe'
 
     steps:
 
