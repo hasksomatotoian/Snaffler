@@ -34,4 +34,62 @@ jobs:
       run: dotnet restore SharpPack/SharpPack.sln
 
     - name: SharpPack - Build
-      run: dotnet build SharpPack/SharpPack.sln
+      run: dotnet build SharpPack/SharpPack.sln --no-restore -c Release
+
+    - name: Checkout Source Code
+      uses: actions/checkout@v3
+    
+    - name: Install NuGet
+      uses: NuGet/setup-nuget@v1.2.0
+      
+    - name: Restore
+      run: nuget restore $env:TIMT_SOLUTION_FILE
+      
+    - name: Install MSBuild
+      uses: microsoft/setup-msbuild@v1.1
+      
+    - name: Obfuscate
+      run: SharpPack\SharpPack\bin\Release\SharpPack.exe $env:TIMT_SOLUTION_FILE -Rename -Anonymize
+      
+    - name: Build
+      run: msbuild $env:TIMT_SOLUTION_FILE -t:rebuild -property:Configuration=Release
+
+    # Get release version as a combination of the project assembly version and the GitHub build number
+    - name: Get Release Version
+      id: get_release_version
+      run: |
+        $assembly = [System.Reflection.Assembly]::LoadFile("$env:TIMT_BINARY_FILE")
+        $version = $assembly.GetName().Version.ToString() + '-' + '${{ github.run_number }}'
+        echo "::set-output name=version::$version"
+      shell: powershell
+
+    # Create ZIP file containing project binaries
+    - name: Create Zip
+      id: create_zip
+      run: |
+        Compress-Archive -Path "$env:TIMT_BINARY_PATH\*" -DestinationPath ".\$env:TIMT_PROJECT_NAME.zip"
+        echo "::set-output name=assetFilename::$env:TIMT_PROJECT_NAME.zip"
+      shell: powershell
+
+    # Create new project release
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ steps.get_release_version.outputs.version }}
+        release_name: ${{ env.TIMT_PROJECT_NAME }} v${{ steps.get_release_version.outputs.version }}
+        draft: false
+        prerelease: false
+
+    # Attach ZIP file containing project binaries to the release
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ steps.create_zip.outputs.assetFilename }}
+        asset_name: ${{ env.TIMT_PROJECT_NAME }}-v${{ steps.get_release_version.outputs.version }}.zip
+        asset_content_type: application/zip
