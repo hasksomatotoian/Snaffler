@@ -26,35 +26,23 @@ jobs:
     - name: SharpPack - Checkout Source Code
       uses: actions/checkout@v3
       with:
-        repository: hasksomatotoian/SharpPack
         path: SharpPack
+        repository: hasksomatotoian/SharpPack
         ref: refs/heads/master
 
     - name: SharpPack - Restore
-      run: dotnet restore SharpPack/SharpPack.sln
+      run: dotnet restore SharpPack\SharpPack.sln
 
     - name: SharpPack - Build
-      run: dotnet build SharpPack/SharpPack.sln --no-restore -c Release
+      run: dotnet build SharpPack\SharpPack.sln --no-restore -c Release -o SharpPack\bin
 
-    - name: SharpPack - Dir
-      run: |
-        dir .\
-        dir SharpPack\
-        dir SharpPack\SharpPack\
-
-    - name: $env:TIMT_PROJECT_NAME - Checkout Source Code
+    - name: Checkout Source Code
       uses: actions/checkout@v3
       with:
-        path: $env:TIMT_PROJECT_NAME
+        path: Snaffler
 
-    - name: SharpPack - Dir
-      run: |
-        dir .\
-        dir SharpPack\
-        dir SharpPack\SharpPack\
-      
     - name: Obfuscate
-      run: D:\a\Snaffler\Snaffler\SharpPack\SharpPack\bin\Release\net7.0\SharpPack.exe $env:TIMT_SOLUTION_FILE -Rename -Anonymize
+      run: SharpPack\bin\SharpPack.exe $env:TIMT_SOLUTION_FILE -Rename -Anonymize
     
     - name: Install NuGet
       uses: NuGet/setup-nuget@v1.2.0
