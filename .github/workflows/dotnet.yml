@@ -9,12 +9,12 @@ on:
 
 jobs:
   build_and_release:
-  
-	# Use "windows-2019" runner for .NET Framework 4.x projects and "windows-latest" for .NET Core projects
+
+    # Use "windows-2019" runner for .NET Framework 4.x projects and "windows-latest" for .NET Core projects
     runs-on: windows-2019
-	
-	# Define env variables containing project properties
-	# Use TIMT (The-Infinite-Monkey-Theorem) prefix for variable names
+
+    # Define env variables containing project properties
+    # Use TIMT (The-Infinite-Monkey-Theorem) prefix for variable names
     env:
       TIMT_PROJECT_NAME: 'Snaffler'
       TIMT_SOLUTION_FILE: 'Snaffler.sln'
