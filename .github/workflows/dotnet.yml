@@ -29,8 +29,6 @@ jobs:
         repository: hasksomatotoian/SharpPack
         path: SharpPack
         ref: refs/heads/master
-        token: ${{ secrets.REPO_ACCESS_KEY }}
-
 
     - name: SharpPack - Restore
       run: dotnet restore SharpPack/SharpPack.sln
