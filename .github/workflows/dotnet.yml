@@ -42,10 +42,10 @@ jobs:
         dir SharpPack\
         dir SharpPack\SharpPack\
 
-    - name: Checkout Source Code
+    - name: $env:TIMT_PROJECT_NAME - Checkout Source Code
       uses: actions/checkout@v3
       with:
-        path: Snaffler
+        path: $env:TIMT_PROJECT_NAME
 
     - name: SharpPack - Dir
       run: |
