@@ -1,7 +1,7 @@
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: Build & Publish
+name: Build & Release
 
 on:
   push:
@@ -14,9 +14,9 @@ jobs:
     runs-on: windows-2019
     env:
       TIMT_PROJECT_NAME: 'Snaffler'
-      GHW_SOLUTION_FILE: 'Snaffler.sln'
-      GHW_BINARY_PATH: '${{ github.workspace }}\Snaffler\bin\Release'
-      GHW_BINARY_FILE: '${{ github.workspace }}\Snaffler\bin\Release\Snaffler.exe'
+      TIMT_SOLUTION_FILE: 'Snaffler.sln'
+      TIMT_BINARY_PATH: '${{ github.workspace }}\Snaffler\bin\Release'
+      TIMT_BINARY_FILE: '${{ github.workspace }}\Snaffler\bin\Release\Snaffler.exe'
     steps:
     - uses: actions/checkout@v3
     
@@ -24,26 +24,26 @@ jobs:
       uses: NuGet/setup-nuget@v1.2.0
       
     - name: Restore
-      run: nuget restore $env:GHW_SOLUTION_FILE
+      run: nuget restore $env:TIMT_SOLUTION_FILE
       
     - name: Install MSBuild
       uses: microsoft/setup-msbuild@v1.1
       
     - name: Build
-      run: msbuild $env:GHW_SOLUTION_FILE -t:rebuild -property:Configuration=Release
+      run: msbuild $env:TIMT_SOLUTION_FILE -t:rebuild -property:Configuration=Release
 
-    - name: Get Version
-      id: get_version
+    - name: Get Release Version
+      id: get_release_version
       run: |
-        $assembly = [System.Reflection.Assembly]::LoadFile("$env:GHW_BINARY_FILE")
+        $assembly = [System.Reflection.Assembly]::LoadFile("$env:TIMT_BINARY_FILE")
         $version = $assembly.GetName().Version.ToString() + '-' + '${{ github.run_number }}'
-        echo "::set-output name=assemblyVersion::$version"
+        echo "::set-output name=version::$version"
       shell: powershell
 
     - name: Create Zip
       id: create_zip
       run: |
-        Compress-Archive -Path "$env:GHW_BINARY_PATH\*" -DestinationPath ".\$env:TIMT_PROJECT_NAME.zip"
+        Compress-Archive -Path "$env:TIMT_BINARY_PATH\*" -DestinationPath ".\$env:TIMT_PROJECT_NAME.zip"
         echo "::set-output name=assetFilename::$env:TIMT_PROJECT_NAME.zip"
       shell: powershell
 
@@ -53,8 +53,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: v${{ steps.get_version.outputs.assemblyVersion }}
-        release_name: ${{ env.TIMT_PROJECT_NAME }} v${{ steps.get_version.outputs.assemblyVersion }}
+        tag_name: v${{ steps.get_release_version.outputs.version }}
+        release_name: ${{ env.TIMT_PROJECT_NAME }} v${{ steps.get_release_version.outputs.version }}
         draft: false
         prerelease: false
 
@@ -65,5 +65,5 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ${{ steps.create_zip.outputs.assetFilename }}
-        asset_name: ${{ env.TIMT_PROJECT_NAME }}-v${{ steps.get_version.outputs.assemblyVersion }}.zip
+        asset_name: ${{ env.TIMT_PROJECT_NAME }}-v${{ steps.get_release_version.outputs.version }}.zip
         asset_content_type: application/zip
