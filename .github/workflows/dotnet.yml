@@ -54,7 +54,7 @@ jobs:
       uses: microsoft/setup-msbuild@v1.1
       
     - name: Build
-      run: msbuild $env:TIMT_SOLUTION_FILE -t:rebuild -property:Configuration=Release
+      run: msbuild $env:TIMT_SOLUTION_FILE -t:rebuild -property:Configuration=Release -property:DebugSymbols=false -property:DebugType=None
 
     # Get release version as a combination of the project assembly version and the GitHub build number
     - name: Get Release Version
