@@ -26,8 +26,9 @@ jobs:
     - name: Download SharpPack
       uses: actions/download-artifact@v3
       with:
-        path: SharpPack
+        repository: hasksomatotoian/SharpPack
         name: SharpPack
+        path: SharpPack
 
     - name: Checkout Source Code
       uses: actions/checkout@v3
