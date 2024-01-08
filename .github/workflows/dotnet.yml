@@ -23,6 +23,11 @@ jobs:
 
     steps:
 
+    - name: Checkout Source Code
+      uses: actions/checkout@v3
+      with:
+        path: Snaffler
+
     - name: Download SharpPack.zip
       uses: dsaltares/fetch-gh-release-asset@master
       with:
@@ -31,26 +36,10 @@ jobs:
         target: 'SharpPack\SharpPack.zip'
         token: ${{ secrets.GITHUB_TOKEN }}    
 
-    - name: DIR
-      run: |
-        dir .\
-        dir .\SharpPack
-
-    # Create ZIP file containing project binaries
     - name: Decompress SharpPack.zip
       run: |
         Expand-Archive -Path ".\SharpPack\SharpPack.zip" -DestinationPath ".\SharpPack\"
       shell: powershell
-
-    - name: DIR
-      run: |
-        dir .\
-        dir .\SharpPack
-
-    - name: Checkout Source Code
-      uses: actions/checkout@v3
-      with:
-        path: Snaffler
 
     - name: Obfuscate
       run: SharpPack\SharpPack.exe $env:TIMT_SOLUTION_FILE -Rename -Anonymize
@@ -104,5 +93,5 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ${{ steps.create_zip.outputs.assetFilename }}
-        asset_name: ${{ env.TIMT_PROJECT_NAME }}-v${{ steps.get_release_version.outputs.version }}.zip
+        asset_name: ${{ env.TIMT_PROJECT_NAME }}.zip
         asset_content_type: application/zip
