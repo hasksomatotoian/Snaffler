@@ -34,7 +34,7 @@ jobs:
         repo: 'hasksomatotoian/SharpPack'
         file: 'SharpPack.zip'
         target: 'SharpPack\SharpPack.zip'
-        token: ${{ secrets.GITHUB_TOKEN }}    
+        token: ${{ secrets.REPO_ACCESS_KEY }}    
 
     - name: Decompress SharpPack.zip
       run: |
